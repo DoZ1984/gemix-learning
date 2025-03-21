@@ -2,6 +2,12 @@
 
 Este repositorio está diseñado para aprender a programar en Gemix, un lenguaje retrocompatible con Div Games Studio que permite crear juegos y aplicaciones multimedia.
 
+## Estado actual del proyecto
+
+⚠️ **Nota importante**: Actualmente el repositorio no incluye el archivo ejecutable del compilador Gemix para Linux (`gemix`). Esto significa que las funcionalidades de GitHub Actions y GitHub Codespaces están preparadas pero no operativas hasta que se añada dicho archivo.
+
+Por el momento, puedes utilizar este repositorio con el compilador de Windows si lo tienes disponible.
+
 ## ¿Qué es Gemix?
 
 Gemix es un lenguaje de programación y entorno de desarrollo que mantiene compatibilidad con Div Games Studio, permitiendo crear juegos 2D con facilidad. Sus características principales incluyen:
@@ -15,34 +21,18 @@ Gemix es un lenguaje de programación y entorno de desarrollo que mantiene compa
 ## Estructura del repositorio
 
 - `/bin`: Contiene los binarios y módulos necesarios para ejecutar Gemix
+- `/modules`: Módulos adicionales para Linux y Windows
 - `/examples`: Contiene ejemplos de código Gemix para aprender
 - `/docs`: Documentación sobre el lenguaje y tutoriales
 - `/scripts`: Scripts útiles para compilar y ejecutar programas Gemix
 - `/.github/workflows`: Configuración de GitHub Actions para compilar automáticamente los ejemplos
 - `/.devcontainer`: Configuración para GitHub Codespaces
 
-## Desarrollo con GitHub Codespaces
+## Desarrollo con GitHub Codespaces (pendiente)
 
-Este repositorio está configurado para trabajar con GitHub Codespaces, lo que te permite desarrollar y probar código Gemix directamente desde el navegador sin necesidad de instalar nada localmente.
+Este repositorio está configurado para trabajar con GitHub Codespaces, lo que te permitirá desarrollar y probar código Gemix directamente desde el navegador sin necesidad de instalar nada localmente.
 
-### Cómo usar Codespaces
-
-1. Haz clic en el botón "Code" en la página principal del repositorio
-2. Selecciona la pestaña "Codespaces"
-3. Haz clic en "Create codespace on main"
-4. Espera a que se cargue el entorno de desarrollo
-
-Una vez dentro del entorno de Codespaces:
-
-1. Los archivos del repositorio estarán disponibles en el explorador de archivos
-2. Puedes editar los ejemplos existentes o crear nuevos programas
-3. Para compilar un programa, usa el script incluido:
-   ```
-   chmod +x scripts/compilar.sh  # Solo la primera vez
-   ./scripts/compilar.sh examples/01_hola_mundo/hola_mundo.prg
-   ```
-
-**Nota**: Para que Codespaces funcione correctamente, necesitas subir los binarios de Gemix al directorio `/bin`.
+**Nota**: Esta funcionalidad estará disponible cuando se añada el ejecutable de Gemix para Linux al directorio `/bin`.
 
 ## Requisitos previos (para desarrollo local)
 
@@ -50,7 +40,7 @@ Para utilizar este repositorio localmente necesitas:
 
 1. Tener instalado Git para clonar el repositorio
 2. Para ejecutar los ejemplos en tu ordenador:
-   - En Linux: Asegúrate de que los binarios tienen permisos de ejecución
+   - En Linux: Necesitas el compilador Gemix para Linux (pendiente de añadir)
    - En Windows: Utiliza los módulos de Windows correspondientes
 
 ## Cómo usar este repositorio localmente
@@ -65,10 +55,7 @@ Para utilizar este repositorio localmente necesitas:
 3. Consulta la documentación en `/docs` para aprender más sobre Gemix
 
 4. Para ejecutar un ejemplo:
-   - En Linux: `cd bin && ./gemix ../examples/01_hola_mundo/hola_mundo.prg`
-   - En Windows: Utiliza el compilador de Gemix para Windows
-
-5. Crea tus propios programas Gemix basándote en los ejemplos
+   - En Windows: Utiliza el compilador de Gemix para Windows con los ejemplos
 
 ## Ejemplos disponibles
 
@@ -84,11 +71,11 @@ Un juego sencillo con movimiento y colisiones.
 Ejemplo que muestra cómo implementar sprites animados.
 - Ubicación: `/examples/03_sprites_animacion/`
 
-## GitHub Actions
+## GitHub Actions (pendiente)
 
-Este repositorio utiliza GitHub Actions para compilar automáticamente los ejemplos cuando se suben cambios. Esto permite verificar que el código funciona correctamente sin necesidad de ejecutarlo localmente.
+Este repositorio está configurado para utilizar GitHub Actions para compilar automáticamente los ejemplos cuando se suben cambios. Esto permitirá verificar que el código funciona correctamente sin necesidad de ejecutarlo localmente.
 
-Para que GitHub Actions funcione, es necesario subir los binarios de Gemix al directorio `/bin`.
+**Nota**: Esta funcionalidad estará disponible cuando se añada el ejecutable de Gemix para Linux al directorio `/bin`.
 
 ## Contribuciones
 

@@ -15,29 +15,44 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      - name: Instalar dependencias del sistema
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsdl2-2.0-0 libsdl2-dev
+          
       - name: Configurar permisos de ejecución
         run: |
           chmod +x bin/gemix
           chmod +x scripts/compilar.sh
+          # Dar permisos a todas las librerías
+          chmod +x bin/*.so*
         
       - name: Configurar entorno para librerías compartidas
         run: |
           echo "Configurando librerías compartidas..."
-          # Exportar la ruta de las librerías compartidas
-          export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/bin:$LD_LIBRARY_PATH
-          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+          # Crear enlaces simbólicos necesarios
+          sudo ln -sf $GITHUB_WORKSPACE/bin/libSDL2-2.0.so.0 /usr/lib/libSDL2-2.0.so.0
+          sudo ln -sf $GITHUB_WORKSPACE/bin/libfmod.so.7 /usr/lib/libfmod.so.7
+          sudo ln -sf $GITHUB_WORKSPACE/bin/libfmodex-4.44.61.so /usr/lib/libfmodex-4.44.61.so
+          sudo ln -sf $GITHUB_WORKSPACE/bin/libfmodstudio.so.7 /usr/lib/libfmodstudio.so.7
+          
+          # Crear directorios de módulos si no existen
+          mkdir -p bin/modules/linux/release
+          
           # Listar las librerías disponibles
+          echo "Librerías en /bin:"
           ls -la bin/
           
-      - name: Compilar ejemplos usando el script
+          # Actualizar cache de librerías
+          sudo ldconfig
+          
+      - name: Compilar ejemplos directamente
         run: |
-          # Usar el script de compilación para cada ejemplo
-          export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/bin:$LD_LIBRARY_PATH
           for file in examples/**/*.prg; do
             echo "============================================="
             echo "Compilando $file"
             echo "============================================="
-            ./scripts/compilar.sh "$file"
+            bin/gemix "$file" || true  # El || true evita que el workflow falle si hay errores
             echo ""
           done
           

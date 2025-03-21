@@ -9,4 +9,6 @@ Este directorio contiene los binarios y módulos necesarios para ejecutar progra
 - `gmxre_win32`: Módulo runtime para Windows
 - `GivEXT_mod_net`: Módulo de red
 - `HyperD-API`: API para gráficos 3D
-- `IA`: Módulo de inteligencia artificial
+- `IA`: Archivo de recursos o componente adicional
+
+**Nota**: Para que los ejemplos funcionen correctamente con GitHub Actions, debes subir estos archivos binarios a este directorio.

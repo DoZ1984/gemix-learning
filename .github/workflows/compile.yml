@@ -16,11 +16,32 @@ jobs:
       - uses: actions/checkout@v3
       
       - name: Configurar permisos de ejecución
-        run: chmod +x bin/gemix
-        
-      - name: Compilar ejemplos
         run: |
+          chmod +x bin/gemix
+          chmod +x scripts/compilar.sh
+        
+      - name: Configurar entorno para librerías compartidas
+        run: |
+          echo "Configurando librerías compartidas..."
+          # Exportar la ruta de las librerías compartidas
+          export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/bin:$LD_LIBRARY_PATH
+          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+          # Listar las librerías disponibles
+          ls -la bin/
+          
+      - name: Compilar ejemplos usando el script
+        run: |
+          # Usar el script de compilación para cada ejemplo
+          export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/bin:$LD_LIBRARY_PATH
           for file in examples/**/*.prg; do
+            echo "============================================="
             echo "Compilando $file"
-            bin/gemix $file
+            echo "============================================="
+            ./scripts/compilar.sh "$file"
+            echo ""
           done
+          
+      - name: Listar archivos generados
+        run: |
+          echo "Archivos generados:"
+          find examples -type f -not -name "*.prg" -not -name "*.md"

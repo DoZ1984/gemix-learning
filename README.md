@@ -17,18 +17,43 @@ Gemix es un lenguaje de programación y entorno de desarrollo que mantiene compa
 - `/bin`: Contiene los binarios y módulos necesarios para ejecutar Gemix
 - `/examples`: Contiene ejemplos de código Gemix para aprender
 - `/docs`: Documentación sobre el lenguaje y tutoriales
+- `/scripts`: Scripts útiles para compilar y ejecutar programas Gemix
 - `/.github/workflows`: Configuración de GitHub Actions para compilar automáticamente los ejemplos
+- `/.devcontainer`: Configuración para GitHub Codespaces
 
-## Requisitos previos
+## Desarrollo con GitHub Codespaces
 
-Para utilizar este repositorio necesitas:
+Este repositorio está configurado para trabajar con GitHub Codespaces, lo que te permite desarrollar y probar código Gemix directamente desde el navegador sin necesidad de instalar nada localmente.
+
+### Cómo usar Codespaces
+
+1. Haz clic en el botón "Code" en la página principal del repositorio
+2. Selecciona la pestaña "Codespaces"
+3. Haz clic en "Create codespace on main"
+4. Espera a que se cargue el entorno de desarrollo
+
+Una vez dentro del entorno de Codespaces:
+
+1. Los archivos del repositorio estarán disponibles en el explorador de archivos
+2. Puedes editar los ejemplos existentes o crear nuevos programas
+3. Para compilar un programa, usa el script incluido:
+   ```
+   chmod +x scripts/compilar.sh  # Solo la primera vez
+   ./scripts/compilar.sh examples/01_hola_mundo/hola_mundo.prg
+   ```
+
+**Nota**: Para que Codespaces funcione correctamente, necesitas subir los binarios de Gemix al directorio `/bin`.
+
+## Requisitos previos (para desarrollo local)
+
+Para utilizar este repositorio localmente necesitas:
 
 1. Tener instalado Git para clonar el repositorio
 2. Para ejecutar los ejemplos en tu ordenador:
    - En Linux: Asegúrate de que los binarios tienen permisos de ejecución
    - En Windows: Utiliza los módulos de Windows correspondientes
 
-## Cómo usar este repositorio
+## Cómo usar este repositorio localmente
 
 1. Clona el repositorio:
    ```

@@ -19,44 +19,81 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libsdl2-2.0-0 libsdl2-dev
-          
+      
+      - name: Verificar estructura de directorios
+        run: |
+          echo "Verificando estructura de directorios..."
+          ls -la
+          ls -la bin/
+          ls -la bin/modules/
+          ls -la bin/modules/linux/
+          ls -la bin/modules/linux/release/
+      
       - name: Configurar permisos de ejecución
         run: |
           chmod +x bin/gemix
-          chmod +x scripts/compilar.sh
-          # Dar permisos a todas las librerías
-          chmod +x bin/*.so*
-        
-      - name: Configurar entorno para librerías compartidas
+          find bin -name "*.so*" -exec chmod +x {} \;
+          find bin/modules -name "*.so" -exec chmod +x {} \;
+      
+      - name: Configurar librerías compartidas
         run: |
           echo "Configurando librerías compartidas..."
-          # Crear enlaces simbólicos necesarios
-          sudo ln -sf $GITHUB_WORKSPACE/bin/libSDL2-2.0.so.0 /usr/lib/libSDL2-2.0.so.0
-          sudo ln -sf $GITHUB_WORKSPACE/bin/libfmod.so.7 /usr/lib/libfmod.so.7
-          sudo ln -sf $GITHUB_WORKSPACE/bin/libfmodex-4.44.61.so /usr/lib/libfmodex-4.44.61.so
-          sudo ln -sf $GITHUB_WORKSPACE/bin/libfmodstudio.so.7 /usr/lib/libfmodstudio.so.7
+          # Crear directorio temporal para las librerías
+          sudo mkdir -p /usr/local/lib/gemix
           
-          # Crear directorios de módulos si no existen
-          mkdir -p bin/modules/linux/release
+          # Copiar las librerías al directorio del sistema
+          sudo cp bin/libSDL2-2.0.so.0 /usr/local/lib/gemix/
+          sudo cp bin/libfmod.so.7 /usr/local/lib/gemix/
+          sudo cp bin/libfmodex-4.44.61.so /usr/local/lib/gemix/
+          sudo cp bin/libfmodstudio.so.7 /usr/local/lib/gemix/
           
-          # Listar las librerías disponibles
-          echo "Librerías en /bin:"
-          ls -la bin/
+          # Crear enlaces simbólicos
+          sudo ln -sf /usr/local/lib/gemix/libSDL2-2.0.so.0 /usr/lib/libSDL2-2.0.so.0
+          sudo ln -sf /usr/local/lib/gemix/libfmod.so.7 /usr/lib/libfmod.so.7
+          sudo ln -sf /usr/local/lib/gemix/libfmodex-4.44.61.so /usr/lib/libfmodex-4.44.61.so
+          sudo ln -sf /usr/local/lib/gemix/libfmodstudio.so.7 /usr/lib/libfmodstudio.so.7
           
-          # Actualizar cache de librerías
+          # Verificar que los enlaces se crearon correctamente
+          ls -la /usr/lib/libSDL2-2.0.so.0
+          ls -la /usr/lib/libfmod.so.7
+          
+          # Configurar ruta de librerías compartidas
+          echo "/usr/local/lib/gemix" | sudo tee /etc/ld.so.conf.d/gemix.conf
+          
+          # Actualizar cache de librerías compartidas
           sudo ldconfig
           
-      - name: Compilar ejemplos directamente
+          # Verificar configuración
+          ldconfig -p | grep SDL2
+          ldconfig -p | grep fmod
+      
+      - name: Intentar compilar un ejemplo simple
+        run: |
+          echo "Compilando ejemplo simple..."
+          export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/bin:/usr/local/lib/gemix:$LD_LIBRARY_PATH
+          bin/gemix examples/01_hola_mundo/hola_mundo.prg || true
+      
+      - name: Crear script de compilación temporal
+        run: |
+          cat > compile_temp.sh << 'EOF'
+          #!/bin/bash
+          export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/bin:/usr/local/lib/gemix:$LD_LIBRARY_PATH
+          echo "Compilando $1"
+          bin/gemix "$1"
+          EOF
+          chmod +x compile_temp.sh
+      
+      - name: Compilar todos los ejemplos
         run: |
           for file in examples/**/*.prg; do
             echo "============================================="
             echo "Compilando $file"
             echo "============================================="
-            bin/gemix "$file" || true  # El || true evita que el workflow falle si hay errores
+            ./compile_temp.sh "$file" || true
             echo ""
           done
           
       - name: Listar archivos generados
         run: |
           echo "Archivos generados:"
-          find examples -type f -not -name "*.prg" -not -name "*.md"
+          find examples -type f -not -name "*.prg" -not -name "*.md" || true

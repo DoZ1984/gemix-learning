@@ -1,0 +1,26 @@
+name: Compilar con Gemix
+
+on:
+  push:
+    paths:
+      - 'examples/**/*.prg'
+  pull_request:
+    paths:
+      - 'examples/**/*.prg'
+  workflow_dispatch:
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Configurar permisos de ejecución
+        run: chmod +x bin/gemix
+        
+      - name: Compilar ejemplos
+        run: |
+          for file in examples/**/*.prg; do
+            echo "Compilando $file"
+            bin/gemix $file
+          done

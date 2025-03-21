@@ -32,12 +32,18 @@ jobs:
       - name: Configurar permisos de ejecución
         run: |
           chmod +x bin/gemix
+          chmod +x scripts/compilar_github.sh
           find bin -name "*.so*" -exec chmod +x {} \;
           find bin/modules -name "*.so" -exec chmod +x {} \;
+      
+      - name: Instalar dependencias específicas para SDL2
+        run: |
+          sudo apt-get install -y libsdl2-2.0-0 libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
       
       - name: Configurar librerías compartidas
         run: |
           echo "Configurando librerías compartidas..."
+          
           # Crear directorio temporal para las librerías
           sudo mkdir -p /usr/local/lib/gemix
           
@@ -53,43 +59,20 @@ jobs:
           sudo ln -sf /usr/local/lib/gemix/libfmodex-4.44.61.so /usr/lib/libfmodex-4.44.61.so
           sudo ln -sf /usr/local/lib/gemix/libfmodstudio.so.7 /usr/lib/libfmodstudio.so.7
           
-          # Verificar que los enlaces se crearon correctamente
-          ls -la /usr/lib/libSDL2-2.0.so.0
-          ls -la /usr/lib/libfmod.so.7
-          
           # Configurar ruta de librerías compartidas
           echo "/usr/local/lib/gemix" | sudo tee /etc/ld.so.conf.d/gemix.conf
           
           # Actualizar cache de librerías compartidas
           sudo ldconfig
           
-          # Verificar configuración
-          ldconfig -p | grep SDL2
-          ldconfig -p | grep fmod
-      
-      - name: Intentar compilar un ejemplo simple
-        run: |
-          echo "Compilando ejemplo simple..."
+          # Configurar LD_LIBRARY_PATH
           export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/bin:/usr/local/lib/gemix:$LD_LIBRARY_PATH
-          bin/gemix examples/01_hola_mundo/hola_mundo.prg || true
+          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> $GITHUB_ENV
       
-      - name: Crear script de compilación temporal
-        run: |
-          cat > compile_temp.sh << 'EOF'
-          #!/bin/bash
-          export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/bin:/usr/local/lib/gemix:$LD_LIBRARY_PATH
-          echo "Compilando $1"
-          bin/gemix "$1"
-          EOF
-          chmod +x compile_temp.sh
-      
-      - name: Compilar todos los ejemplos
+      - name: Compilar ejemplos usando script especializado
         run: |
           for file in examples/**/*.prg; do
-            echo "============================================="
-            echo "Compilando $file"
-            echo "============================================="
-            ./compile_temp.sh "$file" || true
+            ./scripts/compilar_github.sh "$file" || true
             echo ""
           done
           

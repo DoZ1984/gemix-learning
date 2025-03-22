@@ -4,8 +4,6 @@ Este repositorio está diseñado para aprender a programar en Gemix, un lenguaje
 
 ## Estado actual del proyecto
 
-⚠️ **Nota importante**: Actualmente el repositorio no incluye el archivo ejecutable del compilador Gemix para Linux (`gemix`). Esto significa que las funcionalidades de GitHub Actions y GitHub Codespaces están preparadas pero no operativas hasta que se añada dicho archivo.
-
 Por el momento, puedes utilizar este repositorio con el compilador de Windows si lo tienes disponible.
 
 ## ¿Qué es Gemix?
